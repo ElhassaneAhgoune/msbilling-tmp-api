@@ -1,0 +1,89 @@
+# Configuration pour l'environnement de test
+spring:
+  # Configuration de la base de données pour les tests
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+    hikari:
+      auto-commit: false
+  
+  # Configuration JPA pour les tests
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: 10
+  
+  # Désactiver Flyway pour les tests
+  flyway:
+    enabled: false
+  
+  # Configuration H2 Console pour les tests (optionnel)
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+# Configuration d'authentification pour les tests
+auth:
+  service:
+    url: http://localhost:8080
+
+# Configuration de logging pour les tests
+logging:
+  level:
+    com.moneysab.cardexis: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.springframework.test: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+# Configuration Visa EPIN pour les tests
+visa:
+  epin:
+    processing:
+      strict-validation: false
+      skip-invalid-records: true
+      max-concurrent-jobs: 2
+      batch-size: 100
+      cleanup:
+        enabled: false
+
+# Configuration du serveur pour les tests
+server:
+  port: 0  # Port aléatoire pour les tests
+
+# Configuration de monitoring pour les tests
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+# Configuration Swagger pour les tests
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui
+  api-docs:
+    enabled: true
+    path: /api-docs
+
+# Configuration de test spécifique
+test:
+  jwt:
+    # Clés de test (peuvent être différentes des clés de production)
+    test-user: testuser
+    test-role: USER
+    test-token-validity: 1h

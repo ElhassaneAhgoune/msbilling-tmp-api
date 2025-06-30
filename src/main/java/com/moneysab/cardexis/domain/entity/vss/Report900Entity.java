@@ -1,0 +1,102 @@
+package com.moneysab.cardexis.domain.entity.vss;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+/**
+ * Entity for VSS-900 Summary Reconciliation Report data.
+ * 
+ * @author EL.AHGOUNE
+ * @version 1.0.0
+ * @since 2024
+ */
+@Entity
+@Table(name = "vss_report_900", 
+       indexes = {
+           @Index(name = "idx_vss_report_900_currency", columnList = "clearing_currency"),
+           @Index(name = "idx_vss_report_900_proc_date", columnList = "processing_date"),
+           @Index(name = "idx_vss_report_900_file", columnList = "source_file_name")
+       })
+@EntityListeners(AuditingEntityListener.class)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@EqualsAndHashCode(callSuper = false)
+public class Report900Entity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
+
+    @Size(max = 3)
+    @Column(name = "clearing_currency", length = 3, nullable = true)
+    private String clearingCurrency;
+
+    @Column(name = "count")
+    private Long count;
+
+    @Column(name = "clearing_amount", precision = 15, scale = 2)
+    private BigDecimal clearingAmount;
+
+    @Column(name = "total_count")
+    private Long totalCount;
+
+    @Column(name = "total_clearing_amount", precision = 15, scale = 2)
+    private BigDecimal totalClearingAmount;
+
+    @Size(max = 100)
+    @Column(name = "transaction_category", length = 100)
+    private String transactionCategory;
+
+    @Size(max = 100)
+    @Column(name = "transaction_direction", length = 100)
+    private String transactionDirection;
+
+    @Column(name = "processing_date")
+    private LocalDate processingDate;
+
+    @Column(name = "report_date")
+    private LocalDate reportDate;
+
+    @Size(max = 255)
+    @Column(name = "source_file_name", length = 255)
+    private String sourceFileName;
+
+    @Column(name = "line_number")
+    private Integer lineNumber;
+
+    @Column(name = "raw_line_content", columnDefinition = "TEXT")
+    private String rawLineContent;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @Builder.Default
+    @Column(name = "is_valid")
+    private Boolean isValid = true;
+
+    @Column(name = "validation_errors", columnDefinition = "TEXT")
+    private String validationErrors;
+} 

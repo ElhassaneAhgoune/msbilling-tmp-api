@@ -1,0 +1,135 @@
+# VSS Field Mapping Configuration
+# Based on ReadingReports.txt specifications
+# This allows easy modification of field positions without code changes
+
+vss:
+  field-mapping:
+    # Report 110 - Settlement Summary
+    report110:
+      settlement-currency:
+        position: 24
+        direction: LEFT_TO_RIGHT
+        max-length: 3
+      count:
+        position: 52
+        direction: RIGHT_TO_LEFT
+        max-length: 15
+      credit-amount:
+        position: 78
+        direction: RIGHT_TO_LEFT
+        max-length: 20
+      debit-amount:
+        position: 104
+        direction: RIGHT_TO_LEFT
+        max-length: 20
+      total-amount:
+        position: 132
+        direction: RIGHT_TO_LEFT
+        max-length: 20
+
+    # Report 120 - Interchange Value
+    report120:
+      settlement-currency:
+        position: 24
+        direction: LEFT_TO_RIGHT
+        max-length: 3
+      clearing-currency:
+        position: 24
+        direction: LEFT_TO_RIGHT
+        max-length: 3
+      table-id:
+        position: 52
+        direction: RIGHT_TO_LEFT
+        max-length: 10
+      count:
+        position: 67
+        direction: RIGHT_TO_LEFT
+        max-length: 15
+      clearing-amount:
+        position: 90
+        direction: RIGHT_TO_LEFT
+        max-length: 20
+      interchange-credits:
+        position: 104
+        direction: RIGHT_TO_LEFT
+        max-length: 20
+      interchange-debits:
+        position: 130
+        direction: RIGHT_TO_LEFT
+        max-length: 20
+
+    # Report 130 - Reimbursement Fees
+    report130:
+      settlement-currency:
+        position: 24
+        direction: LEFT_TO_RIGHT
+        max-length: 3
+      count:
+        position: 62
+        direction: RIGHT_TO_LEFT
+        max-length: 15
+      interchange-amount:
+        position: 87
+        direction: RIGHT_TO_LEFT
+        max-length: 20
+      reimbursement-fee-credits:
+        position: 110
+        direction: RIGHT_TO_LEFT
+        max-length: 20
+      reimbursement-fee-debits:
+        position: 132
+        direction: RIGHT_TO_LEFT
+        max-length: 20
+
+    # Report 140 - Visa Charges
+    report140:
+      settlement-currency:
+        position: 24
+        direction: LEFT_TO_RIGHT
+        max-length: 3
+      count:
+        position: 67
+        direction: RIGHT_TO_LEFT
+        max-length: 15
+      interchange-amount:
+        position: 90
+        direction: RIGHT_TO_LEFT
+        max-length: 20
+      visa-charges-credits:
+        position: 111
+        direction: RIGHT_TO_LEFT
+        max-length: 20
+      visa-charges-debits:
+        position: 132
+        direction: RIGHT_TO_LEFT
+        max-length: 20
+
+    # Report 900 - Summary Reconciliation
+    report900:
+      clearing-currency:
+        position: 22
+        direction: LEFT_TO_RIGHT
+        max-length: 3
+      count:
+        position: 67
+        direction: RIGHT_TO_LEFT
+        max-length: 15
+      clearing-amount:
+        position: 89
+        direction: RIGHT_TO_LEFT
+        max-length: 20
+      total-count:
+        position: 106
+        direction: RIGHT_TO_LEFT
+        max-length: 15
+      total-clearing-amount:
+        position: 131
+        direction: RIGHT_TO_LEFT
+        max-length: 20
+
+# Logging configuration for VSS processing
+logging:
+  level:
+    com.moneysab.cardexis.service.VssReportService: DEBUG
+    com.moneysab.cardexis.util.VssFieldExtractor: DEBUG
+    com.moneysab.cardexis.config.VssFieldMappingConfig: INFO 

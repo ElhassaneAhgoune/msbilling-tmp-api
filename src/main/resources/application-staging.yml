@@ -1,0 +1,82 @@
+# Configuration pour l'environnement de staging
+spring:
+  # Configuration de la base de données - Partagée avec API-1 pour l'authentification
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:192.168.33.10}:${DB_PORT:5432}/${DB_NAME:MS_BILLING}
+    username: ${DB_USERNAME:msbill_staging}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+      leak-detection-threshold: 60000
+      auto-commit: false
+  
+  # Configuration JPA pour le staging
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 25
+          batch_versioned_data: true
+        order_inserts: true
+        order_updates: true
+
+# Configuration d'authentification
+auth:
+  service:
+    url: ${AUTH_SERVICE_URL:http://api-1-staging:8080}
+
+# Configuration de logging pour le staging
+logging:
+  level:
+    com.moneysab.cardexis: INFO
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
+  file:
+    name: /var/log/cardexis/settlement-service-staging.log
+    max-size: 100MB
+    max-history: 30
+
+# Configuration Visa EPIN pour le staging
+visa:
+  epin:
+    processing:
+      strict-validation: true
+      skip-invalid-records: false
+      max-concurrent-jobs: 15
+      batch-size: 1500
+
+# Configuration du serveur pour le staging
+server:
+  port: ${SERVER_PORT:8080}
+
+# Configuration Swagger pour le staging
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui
+    try-it-out-enabled: true
+    operations-sorter: method
+    tags-sorter: alpha
+  api-docs:
+    enabled: true
+    path: /api-docs
+
+# Configuration de monitoring pour le staging
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+        step: 30s

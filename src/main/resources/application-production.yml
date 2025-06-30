@@ -1,0 +1,122 @@
+# Configuration pour l'environnement de production
+spring:
+  # Configuration de la base de données - Partagée avec API-1 pour l'authentification
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT:5432}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 10
+      idle-timeout: 300000
+      connection-timeout: 20000
+      leak-detection-threshold: 60000
+      auto-commit: false
+      connection-test-query: SELECT 1
+      validation-timeout: 5000
+  
+  # Configuration JPA pour la production
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 50
+          batch_versioned_data: true
+        order_inserts: true
+        order_updates: true
+        generate_statistics: false
+
+# Configuration d'authentification
+auth:
+  service:
+    url: ${AUTH_SERVICE_URL}
+
+# Configuration de logging pour la production
+logging:
+  level:
+    com.moneysab.cardexis: INFO
+    org.springframework: WARN
+    org.hibernate: WARN
+    org.springframework.security: WARN
+  file:
+    name: /var/log/cardexis/settlement-service.log
+    max-size: 200MB
+    max-history: 60
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%X{traceId:-},%X{spanId:-}] %logger{36} - %msg%n"
+
+# Configuration Visa EPIN pour la production
+visa:
+  epin:
+    processing:
+      strict-validation: true
+      skip-invalid-records: false
+      max-concurrent-jobs: 25
+      batch-size: 2000
+      cleanup:
+        enabled: true
+        retention-days: 180
+        schedule: "0 1 * * *"  # Daily at 1 AM
+
+# Configuration du serveur pour la production
+server:
+  port: ${SERVER_PORT:8080}
+  tomcat:
+    max-threads: 200
+    min-spare-threads: 10
+    max-connections: 8192
+    accept-count: 100
+    connection-timeout: 20000
+
+# Configuration de monitoring pour la production
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: never
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+        step: 60s
+    tags:
+      application: ${spring.application.name}
+      environment: production
+
+# Configuration de sécurité pour la production
+springdoc:
+  swagger-ui:
+    enabled: false  # Désactiver Swagger en production
+  api-docs:
+    enabled: false
+
+# Configuration SSL/TLS (si nécessaire)
+# server:
+#   ssl:
+#     enabled: true
+#     key-store: ${SSL_KEYSTORE_PATH}
+#     key-store-password: ${SSL_KEYSTORE_PASSWORD}
+#     key-store-type: PKCS12
+#     key-alias: ${SSL_KEY_ALIAS}
+
+# Configuration de cache (si nécessaire)
+# spring:
+#   cache:
+#     type: redis
+#   redis:
+#     host: ${REDIS_HOST}
+#     port: ${REDIS_PORT:6379}
+#     password: ${REDIS_PASSWORD}
+#     timeout: 2000ms
+#     lettuce:
+#       pool:
+#         max-active: 8
+#         max-idle: 8
+#         min-idle: 0

@@ -1,0 +1,70 @@
+# Configuration pour l'environnement de développement
+spring:
+  # Configuration de la base de données - Partagée avec API-1 pour l'authentification
+  datasource:
+    url: jdbc:postgresql://ms-bill-dev.cngg0ec2ij77.eu-west-3.rds.amazonaws.com:5432/MS_BILLING
+    username: msbill_dev
+    password: uqvhLdVb0OeGMQwXjkQp
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 300000
+      connection-timeout: 60000
+      leak-detection-threshold: 60000
+      auto-commit: false
+  
+  # Configuration JPA pour le développement
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 10
+          batch_versioned_data: true
+        order_inserts: true
+        order_updates: true
+
+# Configuration d'authentification
+auth:
+  service:
+    url: ${AUTH_SERVICE_URL:http://localhost:8080}
+
+# Configuration de logging pour le développement
+logging:
+  level:
+    com.moneysab.cardexis: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  file:
+    name: logs/cardexis-settlement-dev.log
+    max-size: 50MB
+    max-history: 10
+
+# Configuration Visa EPIN pour le développement
+visa:
+  epin:
+    processing:
+      strict-validation: false
+      skip-invalid-records: true
+      max-concurrent-jobs: 5
+      batch-size: 500
+
+# Configuration du serveur pour le développement
+server:
+  port: 8080  # Port différent pour éviter les conflits avec API-1
+
+# Configuration Swagger pour le développement
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui
+    try-it-out-enabled: true
+    operations-sorter: method
+    tags-sorter: alpha
+  api-docs:
+    enabled: true
+    path: /api-docs
